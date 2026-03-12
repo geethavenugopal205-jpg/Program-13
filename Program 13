@@ -1,0 +1,49 @@
+class Solution:
+    def inversionCount(self, arr):
+        n = len(arr)
+        # Temporary array for merge process
+        temp_arr = [0] * n
+        return self._mergeSort(arr, temp_arr, 0, n - 1)
+
+    def _mergeSort(self, arr, temp_arr, left, right):
+        inv_count = 0
+        if left < right:
+            mid = (left + right) // 2
+            
+            # Count inversions in left and right halves
+            inv_count += self._mergeSort(arr, temp_arr, left, mid)
+            inv_count += self._mergeSort(arr, temp_arr, mid + 1, right)
+            
+            # Count inversions while merging the two halves
+            inv_count += self._merge(arr, temp_arr, left, mid, right)
+            
+        return inv_count
+
+    def _merge(self, arr, temp_arr, left, mid, right):
+        i = left    # Starting index for left subarray
+        j = mid + 1 # Starting index for right subarray
+        k = left    # Starting index to be filled in temp_arr
+        inv_count = 0
+
+        while i <= mid and j <= right:
+            if arr[i] <= arr[j]:
+                temp_arr[k] = arr[i]
+                i += 1
+            else:
+                # If arr[i] > arr[j], then there are (mid - i + 1) inversions.
+                # All elements from current i to mid in the left subarray
+                # are greater than arr[j].
+                temp_arr[k] = arr[j]
+                inv_count += (mid - i + 1)
+                j += 1
+            k += 1
+
+        # Copy remaining elements of left subarray, if any
+        while i <= mid:
+            temp_arr[k] = arr[i]
+            i += 1
+            k += 1
+
+    
+        
+            
